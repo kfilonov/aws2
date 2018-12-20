@@ -1,8 +1,3 @@
-user1
-ShOV!2KSUL2[
-AKIAJFNF4PMCFVRQ7WYQ
-iLlbqN11eIpD97v/Wb40QFfS1RXoAY7h8xFIa6wm
-
 Host *.compute.amazonaws.com                           
   IdentityFile ~/.ssh/user10.pem                       
   User ec2-user                                        
