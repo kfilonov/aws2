@@ -1,18 +1,22 @@
 #!/bin/bash
 
-image_id=ami-09693313102a30b2c
+image_id=ami-02fc24d56bc5f3d67 #ami-09693313102a30b2c
 instance_type=t2.micro
 vpc_id=vpc-08b950cd8140c7403
 key_name=user1
 subnet_id=subnet-060d8c5c243f86664
 shutdown_type=stop
-tags="ResourceType=instance,Tags=[{Key=installation_id,Value=user1-1}]"
+tags="ResourceType=instance,Tags=[{Key=installation_id,Value=${key_name}-1},{Key=Name,Value=NAME}]" 
+
+# tags="ResourceType=instance,Tags=[{Key=installation_id,Value=user1-1}]"
 
 
-start()                                                                         
+start_vm()                                                                         
 {
-  private_ip_address="10.1.1.101"
-  public_ip=associate-public-ip-address
+  local private_ip_address="$1"
+  local public_ip="$2"
+  local name="$3"
+  local tags=$(echo $tags | sed s/NAME/$name/)  
   
   aws ec2 run-instances \
   --image-id "$image_id" \
@@ -25,10 +29,31 @@ start()
   --${public_ip}  
 
 }                                                                                
-stop()                                                                          
-{                                                                               
-  :                                                                             
+start()                                                                          
+{                                                      
+
+# start_vm 10.1.1.101 associate-public-ip-address
+# start_vm 10.1.1.102 noassociate-public-ip-address
+# done
+
+start_vm 10.1.1.111 associate-public-ip-address user1-vm1
+for i in {2..5}; do
+start_vm 10.1.1.$((100+i)) no-associate-public-ip-address user1-vm$i
+done
+
 }
+
+stop()
+
+{ 
+  ids=($(
+    aws ec2 describe-instances \
+	--query 'Reservations[*].Instances[?KeyName==`'$key_name'`].InstanceId' \
+	--output text
+  ))
+    aws ec2 terminate-instances --instance-ids "${ids[@]}"
+}
+
 
 if [ "$1" = start ]; then
   start
