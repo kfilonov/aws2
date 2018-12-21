@@ -1,11 +1,11 @@
 #!/bin/bash
 
-USER_NAME=user10
+USER_NAME=user1
 IMAGE_ID=ami-02fc24d56bc5f3d67 # ami-09693313102a30b2c
 INSTANCE_TYPE=t2.micro
-VPC_ID=vpc-04540e242cdfb35de
-KEY_NAME=user10
-SUBNET_ID=subnet-0d00d8b5d01e66e35
+VPC_ID=vpc-08b950cd8140c7403
+KEY_NAME=user1
+SUBNET_ID=subnet-060d8c5c243f86664
 SHUTDOWN_TYPE=stop
 TAGS="ResourceType=instance,Tags=[{Key=installation_id,Value=${USER_NAME}-1},{Key=Name,Value=NAME}]"
 
@@ -46,13 +46,13 @@ get_dns_name()
 start()
 {
   start_log=$(
-    start_vm 10.2.1.101 associate-public-ip-address ${USER_NAME}-vm1
+    start_vm 10.1.1.111 associate-public-ip-address ${USER_NAME}-vm1
   )
 
   instance_id=$(echo "${start_log}" | jq -r .Instances[0].InstanceId)
 
   # for i in {2..3}; do
-  #   start_vm 10.2.1.$((100+i)) no-associate-public-ip-address ${USER_NAME}-vm$i > /dev/null
+  #   start_vm 10.1.1.$((100+i)) no-associate-public-ip-address ${USER_NAME}-vm$i > /dev/null
   # done
 
   sleep 2
